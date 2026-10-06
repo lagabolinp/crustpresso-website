@@ -8,6 +8,7 @@ for(const m of (html+css).matchAll(/assets\/[\w.-]+/g))assert(fs.existsSync(new 
 assert.equal((html.match(/<h1\b/g)||[]).length,1,'One primary heading');
 assert(html.includes('9779849272620'));assert(!/Nibesh|12 × 12|12ft/.test(html));
 assert(html.includes('10 × 10'));assert(html.includes('Crustpresso Zero'));
+assert.equal((html.match(/We\u2019re working to set up Crustpresso Zero/g)||[]).length,1,'Zero setup sentence appears once');
 assert.equal((html.match(/data-cafe=/g)||[]).length,6);
 assert.equal((html.match(/data-step=/g)||[]).length,8);
 assert.equal((html.match(/class="operator-chapter/g)||[]).length,6); // wrapper + five chapters

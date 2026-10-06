@@ -4,7 +4,7 @@ Complete static website for the Crustpresso Café as a Service concept.
 
 ## Local use
 
-Open `Crustpresso_Preview.html` directly for a self-contained snapshot. For editing, use Node 20+ and run `npm run dev`, then open http://localhost:5173. There are no dependencies to install.
+Open `Crustpresso_Preview.html` directly for a self-contained snapshot. For editing, use Node 20+ and run `npm run dev`, then open http://localhost:5173. The local server has no dependencies. Install packages before `npm run preview` or `npm run deploy`, which use Wrangler.
 
 - `public/index.html`: all website copy and page structure
 - `public/styles.css`: responsive brand design
@@ -28,7 +28,7 @@ The latest square-pizza emblem and generated café sequence are included. The ca
 
 ## Hosting
 
-Static-only; no framework service, database, API key or paid plugin. Use an eligible free hosting plan subject to provider limits. The existing domain's registration/renewal is separate. No hosting or DNS changes have been made by generating this package.
+Static-only; no framework service, database, API key or paid plugin. Production is a Cloudflare Worker serving the `dist/` assets. There is no server-side runtime. `npm run build` copies `public/` to `dist/`. `npm run preview` serves that build locally with Wrangler. `npm run deploy` publishes the Worker. The Worker name is `crustpresso-web`, separate from the existing Pages project, and `wrangler.jsonc` does not attach `crustpresso.com`. See `DEPLOYMENT.md`.
 
 ## Asset provenance
 

@@ -1,48 +1,49 @@
-# GitHub → Cloudflare → crustpresso.com
+# GitHub → Cloudflare Workers → crustpresso.com
 
-The ZIP contains the complete source. No accounts or DNS records were changed.
+Static site. The build copies `public/` to `dist/`. Cloudflare Workers serves those files as static assets. There is no Worker script and no server-side runtime.
 
-## 1. Open and review in Cursor
+The existing Cloudflare Pages project is left in place. This configuration does not attach `crustpresso.com` and does not change DNS. Attach the domain only after the Worker is verified on its `workers.dev` URL.
 
-Extract the ZIP and open `crustpresso-website` as the project folder. Read `START_HERE.txt`. Open `Crustpresso_Preview.html` for an immediate preview, or run `npm run dev` for the editable version. Run `npm run check` and `npm run build` before publishing.
-
-## 2. Create the GitHub repository
-
-Recommended repository name: `crustpresso-website`. A private repository is fine. Create an empty repository without starter files if publishing this existing folder. In Cursor Source Control, initialize the project, commit the files, then publish/connect to your repository. Keep secrets out of the repository. The `.gitignore` excludes generated output and environment files.
-
-Push the CONTENTS of the project folder so `package.json` is at the repository root. Do not push the ZIP itself as the website.
-
-## 3. Connect Cloudflare Pages
-
-Use the Pages Git integration workflow under Workers & Pages. Connect GitHub and grant access to this repository. If Cloudflare opens a Workers-specific form asking for a deploy command, return to the Pages creation flow for these settings.
+## Build
 
 | Setting | Value |
 | --- | --- |
-| Project name | crustpresso |
+| Worker name | `crustpresso-web` |
+| Framework | None. Static HTML, CSS and JavaScript |
 | Production branch | main |
-| Framework preset | None |
-| Root directory | repository root / blank |
-| Build command | npm run build |
-| Build output directory | dist |
+| Root directory | repository root |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Asset directory | `dist` (set in `wrangler.jsonc`, not as a separate Pages output field) |
+| Missing routes | nearest `404.html` |
+| Environment variables | none |
 
-No environment secrets, Functions, paid plugins or database are needed. Choose the free plan for this static site, subject to provider limits. Review the generated pages.dev address before attaching the domain. Git pushes to the production branch will trigger new builds through the Git integration.
+`npm run deploy` builds, then runs `wrangler deploy`. Use that from a machine that is already logged in with Wrangler. In Workers Builds, keep build and deploy as two steps: `npm run build`, then `npx wrangler deploy`.
 
-## 4. Connect both domain names
+The Worker name is `crustpresso-web` so it can exist beside the current Pages project. The name in the Cloudflare dashboard must match `name` in `wrangler.jsonc`.
 
-Add `crustpresso.com` and `www.crustpresso.com` through the Pages project's Custom domains workflow. Follow the DNS records Cloudflare supplies; do not invent the pages.dev hostname. For the apex domain, Cloudflare requires the domain to be a zone on the same account and its assigned nameservers to be active. Preserve existing mail and other unrelated DNS records if importing or changing the zone.
+## Connect GitHub
 
-Check both hostnames resolve and have valid HTTPS. Only then choose a permanent redirect from www to https://crustpresso.com, preserving path and query string, through Cloudflare's redirect controls. The site canonical URL is the apex domain. Check http/https and www/apex independently so both versions open reliably.
+1. In the Cloudflare dashboard, go to **Workers & Pages**.
+2. Select **Create application**.
+3. Select **Get started** next to **Import a repository**.
+4. Choose the GitHub account and the `crustpresso-website` repository.
+5. Set the production branch to `main`, the root directory to the repository root, the build command to `npm run build`, and leave the deploy command as `npx wrangler deploy`.
+6. Set the project name to `crustpresso-web`.
+7. Select **Save and Deploy**.
+8. Open the `workers.dev` URL and review the site before changing any domain.
 
-## Launch checks
+Do not delete the Pages project. Do not add a custom domain in this step.
 
-- Desktop and mobile: hero, café stages, pizza stages and menu.
-- Keyboard: navigation, stage buttons and FAQ.
-- Reduced-motion setting: content remains readable without pinned pizza animation.
-- WhatsApp opens +9779849272620 with the enquiry text.
-- No opening date, location, price or passive-investment promise is implied.
-- Both domain names load through HTTPS, including links opened from messaging apps.
+## Connect crustpresso.com later
 
-Official references checked when preparing this package:
-- https://developers.cloudflare.com/pages/configuration/build-configuration/
-- https://developers.cloudflare.com/pages/get-started/git-integration/
-- https://developers.cloudflare.com/pages/configuration/custom-domains/
+Do this only after the `workers.dev` site looks right. Adding the hostname creates DNS records and will start sending that hostname to the Worker. A hostname already attached to Pages has to be removed there first, or the dashboard will refuse the new record.
+
+1. In **Workers & Pages**, open the existing Pages project and remove `crustpresso.com` and `www.crustpresso.com` from its custom domains. Leave the Pages project itself.
+2. Open the `crustpresso-web` Worker.
+3. Go to **Settings** → **Domains & Routes** → **Add** → **Custom Domain**.
+4. Enter `crustpresso.com` and select **Add Custom Domain**.
+5. Repeat for `www.crustpresso.com` only if that hostname should also hit the Worker. Otherwise keep the existing www-to-apex redirect.
+6. Confirm both HTTPS and the apex/www behavior, then retire the Pages deployment.
+
+`_headers` in `public/` is copied into `dist/` and is honored by Workers static assets.
