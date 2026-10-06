@@ -1,0 +1,12 @@
+{
+  "name": "crustpresso-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Crustpresso — Café as a Service",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

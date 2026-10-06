@@ -1,0 +1,15 @@
+CRUSTPRESSO — CURSOR WEBSITE PACKAGE
+
+1. Extract this ZIP.
+2. Open the crustpresso-website folder in Cursor.
+3. Open Crustpresso_Preview.html in Chrome to view the whole website immediately.
+4. For editing, open Cursor's terminal and run: npm run dev
+5. Open http://localhost:5173
+6. Read CURSOR_PROMPT.md and paste it into Cursor Agent when ready.
+
+This is a complete static website, not just a prompt.
+All assets are included. No API keys or paid plugins are required.
+Edit public/index.html, public/styles.css and public/app.js.
+
+GitHub and Cloudflare are the next stage. The website is not deployed yet.
+See DEPLOYMENT.md for the prepared settings.
